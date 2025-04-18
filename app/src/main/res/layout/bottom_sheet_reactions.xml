@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sheet_bg"
+    android:padding="16dp"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="56dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <!-- Handle for bottom sheet -->
+    <View
+        android:id="@+id/bottom_sheet_handle"
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bottom_sheet_handle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_reactions_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_reaction"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_handle" />
+
+    <!-- Emoji Reactions Grid -->
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/grid_emojis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:columnCount="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_reactions_title">
+
+        <Button
+            android:id="@+id/btn_emoji_1"
+            style="@style/EmojiButtonStyle"
+            android:text="❤️" />
+
+        <Button
+            android:id="@+id/btn_emoji_2"
+            style="@style/EmojiButtonStyle"
+            android:text="👍" />
+
+        <Button
+            android:id="@+id/btn_emoji_3"
+            style="@style/EmojiButtonStyle"
+            android:text="👏" />
+
+        <Button
+            android:id="@+id/btn_emoji_4"
+            style="@style/EmojiButtonStyle"
+            android:text="🔥" />
+
+        <Button
+            android:id="@+id/btn_emoji_5"
+            style="@style/EmojiButtonStyle"
+            android:text="😍" />
+
+        <Button
+            android:id="@+id/btn_emoji_6"
+            style="@style/EmojiButtonStyle"
+            android:text="😂" />
+
+        <Button
+            android:id="@+id/btn_emoji_7"
+            style="@style/EmojiButtonStyle"
+            android:text="🎉" />
+
+        <Button
+            android:id="@+id/btn_emoji_8"
+            style="@style/EmojiButtonStyle"
+            android:text="💯" />
+
+    </androidx.gridlayout.widget.GridLayout>
+
+    <!-- Comment Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/grid_emojis">
+
+        <EditText
+            android:id="@+id/et_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/comment_input_bg"
+            android:hint="@string/add_a_comment"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="#80FFFFFF"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/btn_send_comment"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/send_comment"
+            android:src="@drawable/ic_send"
+            android:tint="@color/colorAccent" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

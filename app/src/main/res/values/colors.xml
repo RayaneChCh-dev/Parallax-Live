@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4285F4</color> <!-- Changed to Google blue -->
+    <color name="colorPrimaryDark">#3367D6</color>
+    <color name="colorAccent">#F44336</color>
+    <color name="colorBackground">#121212</color>
+    <color name="colorText">#FFFFFF</color>
+    <color name="colorDivider">#33FFFFFF</color>
+</resources>

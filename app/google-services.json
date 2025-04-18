@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "732542501155",
+    "firebase_url": "https://parallaxlive-a5710-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "parallaxlive-a5710",
+    "storage_bucket": "parallaxlive-a5710.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732542501155:android:96deb6406d80777d37cc96",
+        "android_client_info": {
+          "package_name": "com.example.parallaxlive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "732542501155-g6bdh4bjti4ir103nijn83rk6btnvk3i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.parallaxlive",
+            "certificate_hash": "8833a53fab333b9ebe03ab598ce974a65563205d"
+          }
+        },
+        {
+          "client_id": "732542501155-4m43hkfl4u4bkr58mcqpfftbm18nlpn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-qCJxI3OM1leXEcnW3pQrcnkI6sNW12s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "732542501155-4m43hkfl4u4bkr58mcqpfftbm18nlpn0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
