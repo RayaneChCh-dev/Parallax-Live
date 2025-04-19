@@ -34,4 +34,5 @@
     <string name="add_reaction">Add Reaction</string>
     <string name="add_a_comment">Add a comment…</string>
     <string name="send_comment">Send Comment</string>
+    <string name="default_web_client_id">732542501155-cd33ivujk5en4fkpnljo7msj5uf2fi3a.apps.googleusercontent.com</string>
 </resources>

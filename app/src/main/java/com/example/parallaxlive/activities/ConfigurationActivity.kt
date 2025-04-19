@@ -7,10 +7,14 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parallaxlive.R
 import com.example.parallaxlive.models.LiveConfig
-import com.example.parallaxlive.utils.FirebaseAuthHelper  // Change this import
+import com.example.parallaxlive.utils.FirebaseAuthHelper
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 
 /**
  * Activity for configuring the fake live stream
@@ -23,14 +27,18 @@ class ConfigurationActivity : AppCompatActivity() {
     private lateinit var messageTypeRadioGroup: RadioGroup
     private lateinit var customMessageEditText: EditText
     private lateinit var startLiveButton: Button
+    private lateinit var signOutButton: Button
 
-    private lateinit var firebaseAuthHelper: FirebaseAuthHelper  // Change this variable
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firebaseAuthHelper: FirebaseAuthHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_configuration)
 
-        firebaseAuthHelper = FirebaseAuthHelper(this)  // Change this initialization
+        // Initialize Firebase
+        auth = FirebaseAuth.getInstance()
+        firebaseAuthHelper = FirebaseAuthHelper(this)
 
         // Initialize views
         usernameTextView = findViewById(R.id.tv_username)
@@ -39,6 +47,7 @@ class ConfigurationActivity : AppCompatActivity() {
         messageTypeRadioGroup = findViewById(R.id.radio_group_message_type)
         customMessageEditText = findViewById(R.id.et_custom_message)
         startLiveButton = findViewById(R.id.btn_start_live)
+        signOutButton = findViewById(R.id.btn_sign_out)
 
         setupViews()
         setupListeners()
@@ -46,7 +55,7 @@ class ConfigurationActivity : AppCompatActivity() {
 
     private fun setupViews() {
         // Set username from Firebase authentication
-        val username = firebaseAuthHelper.getUsername()  // This method needs to be available in FirebaseAuthHelper
+        val username = firebaseAuthHelper.getUsername()
         usernameTextView.text = getString(R.string.hello_username, username)
 
         // Set initial viewers count
@@ -80,6 +89,11 @@ class ConfigurationActivity : AppCompatActivity() {
         // Start live button listener
         startLiveButton.setOnClickListener {
             startLiveStream()
+        }
+
+        // Set up sign out button listener
+        signOutButton.setOnClickListener {
+            signOut()
         }
     }
 
@@ -117,5 +131,27 @@ class ConfigurationActivity : AppCompatActivity() {
             putExtra(MainActivity.EXTRA_LIVE_CONFIG, liveConfig)
         }
         startActivity(intent)
+    }
+
+    private fun signOut() {
+        // Sign out from Firebase
+        auth.signOut()
+
+        // Sign out from Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            // Return to welcome screen
+            val intent = Intent(this, WelcomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+
+            Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show()
+        }
     }
 }
