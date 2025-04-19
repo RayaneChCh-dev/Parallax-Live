@@ -1,4 +1,3 @@
-// Create this file at: app/src/main/java/com/example/parallaxlive/adapters/MessageAdapter.kt
 package com.example.parallaxlive.adapters
 
 import android.view.LayoutInflater
@@ -9,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parallaxlive.R
 import com.example.parallaxlive.models.FakeMessage
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Adapter for displaying fake messages in the live stream
@@ -18,10 +19,13 @@ class MessageAdapter(
     private val onReactionClicked: (FakeMessage, FakeMessage.ReactionType) -> Unit
 ) : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
+    private val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val profileImageView: ImageView = itemView.findViewById(R.id.iv_profile)
         private val usernameTextView: TextView = itemView.findViewById(R.id.tv_username)
         private val messageTextView: TextView = itemView.findViewById(R.id.tv_message)
+        private val timeTextView: TextView = itemView.findViewById(R.id.tv_timestamp)
         private val heartIcon: ImageView = itemView.findViewById(R.id.iv_heart)
         private val likeIcon: ImageView = itemView.findViewById(R.id.iv_like)
         private val clapIcon: ImageView = itemView.findViewById(R.id.iv_clap)
@@ -31,6 +35,9 @@ class MessageAdapter(
             profileImageView.setImageResource(message.profilePicResId)
             usernameTextView.text = message.username
             messageTextView.text = message.message
+
+            // Set timestamp
+            timeTextView.text = timeFormat.format(Date(message.timestamp))
 
             // Set reaction states
             updateReactionIcons(message)

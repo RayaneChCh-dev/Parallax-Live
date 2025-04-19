@@ -17,6 +17,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        if(project.hasProperty("CLAUDE_API_KEY")){
+            buildConfigField("String", "CLAUDE_API_KEY", "\"${project.property("CLAUDE_API_KEY")}\"")
+        }
     }
 
     buildTypes {
@@ -37,7 +40,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
+
 }
 
 dependencies {
@@ -68,6 +73,7 @@ dependencies {
     implementation(libs.androidx.recyclerview)
 
     // Material Design
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation(libs.material)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.credentials)
@@ -85,4 +91,12 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    // Retrofit and Anthropic
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

@@ -67,10 +67,8 @@ class CameraHelper(
                     cameraSelector,
                     preview
                 )
-
-                // Connect the preview to the TextureView
                 preview.setSurfaceProvider { request ->
-                    // Get the SurfaceTexture from the TextureView
+
                     val surfaceTexture = textureView.surfaceTexture ?: return@setSurfaceProvider
 
                     // Create a Surface with the SurfaceTexture

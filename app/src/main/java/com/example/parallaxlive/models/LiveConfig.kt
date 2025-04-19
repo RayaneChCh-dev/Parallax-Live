@@ -10,7 +10,10 @@ import kotlinx.parcelize.Parcelize
 data class LiveConfig(
     val viewersCount: Int,
     val messageType: MessageType,
-    val customMessage: String = ""
+    val customMessage: String = "",
+    val livePurpose: String = "", // Purpose of the live stream (e.g., "Cooking show", "Travel vlog")
+    val location: String = "",    // User's current location (e.g., "Paris, France")
+    val userActivityDescription: String = "" // What the user is doing (e.g., "Showing street food")
 ) : Parcelable {
 
     enum class MessageType {
@@ -24,6 +27,8 @@ data class LiveConfig(
      */
     fun isValid(): Boolean {
         return viewersCount >= 10 &&
-                (messageType != MessageType.CUSTOM || customMessage.isNotBlank())
+                (messageType != MessageType.CUSTOM || customMessage.isNotBlank()) &&
+                livePurpose.isNotBlank() &&
+                location.isNotBlank()
     }
 }

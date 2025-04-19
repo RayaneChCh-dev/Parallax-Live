@@ -15,12 +15,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.example.parallaxlive.R
 import com.example.parallaxlive.adapters.MessageAdapter
 import com.example.parallaxlive.adapters.ReactionAdapter
+import com.example.parallaxlive.models.ClaudeApiService
 import com.example.parallaxlive.models.FakeMessage
 import com.example.parallaxlive.models.LiveConfig
 import com.example.parallaxlive.utils.CameraHelper
+import com.example.parallaxlive.utils.ClaudeRepository
 import com.example.parallaxlive.utils.MessageGenerator
 import com.example.parallaxlive.utils.FirebaseAuthHelper
 import com.example.parallaxlive.utils.DatabaseHelper
+import com.example.parallaxlive.utils.RetrofitClient
+import com.example.parallaxlive.utils.ViewerCountManager
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
@@ -47,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var reactionAdapter: ReactionAdapter
 
     // Helpers
+    private lateinit var viewerCountManager: ViewerCountManager
     private lateinit var cameraHelper: CameraHelper
     private lateinit var messageGenerator: MessageGenerator
     private lateinit var firebaseAuthHelper: FirebaseAuthHelper
@@ -66,9 +71,13 @@ class MainActivity : AppCompatActivity() {
         firebaseAuthHelper = FirebaseAuthHelper(this)
         databaseHelper = DatabaseHelper()
 
+        // Get the enhanced LiveConfig from the intent
         liveConfig = intent.getParcelableExtra(EXTRA_LIVE_CONFIG) ?: LiveConfig(
             viewersCount = 100,
-            messageType = LiveConfig.MessageType.POSITIVE
+            messageType = LiveConfig.MessageType.POSITIVE,
+            livePurpose = "General livestream",
+            location = "Unknown location",
+            userActivityDescription = "Casual streaming"
         )
 
         // Initialize UI components
@@ -161,16 +170,29 @@ class MainActivity : AppCompatActivity() {
     private fun startLiveStream() {
         isLiveActive = true
 
-        // Initialize message generator
-        messageGenerator = MessageGenerator(liveConfig) { message ->
+        // Create API service and repository
+        val retrofit = RetrofitClient.getInstance()
+        val claudeApiService = retrofit.create(ClaudeApiService::class.java)
+        val claudeRepository = ClaudeRepository(claudeApiService)
+
+        // Initialize message generator with Claude repository
+        messageGenerator = MessageGenerator(liveConfig, claudeRepository) { message ->
             runOnUiThread {
                 messageAdapter.addMessage(message)
             }
         }
         messageGenerator.startGenerating()
 
-        // Start increasing viewers count
-        startViewersCounter()
+        // Initialize and start viewer count manager
+        viewerCountManager = ViewerCountManager(liveConfig) { count ->
+            runOnUiThread {
+                viewersCountTextView.text = count.toString()
+            }
+        }
+        viewerCountManager.start()
+
+        // Update live stream title/topic based on purpose
+        updateLiveTitle()
     }
 
     private fun endLiveStream() {
@@ -181,12 +203,32 @@ class MainActivity : AppCompatActivity() {
             messageGenerator.stopGenerating()
         }
 
-        // Stop viewers counter
-        viewersTimer?.cancel()
-        viewersTimer = null
+        // Stop viewer count manager
+        if (::viewerCountManager.isInitialized) {
+            viewerCountManager.stop()
+        }
 
         // Return to configuration screen
         finish()
+    }
+
+    private fun updateLiveTitle() {
+        // Find the live title TextView (you'll need to add this to your layout)
+        val liveTitleTextView = findViewById<TextView>(R.id.tv_live_title)
+
+        // Set title based on purpose and location
+        val liveTitle = when {
+            liveConfig.livePurpose.isNotBlank() && liveConfig.location.isNotBlank() ->
+                "${liveConfig.livePurpose} from ${liveConfig.location}"
+            liveConfig.livePurpose.isNotBlank() ->
+                liveConfig.livePurpose
+            liveConfig.location.isNotBlank() ->
+                "Live from ${liveConfig.location}"
+            else ->
+                "Live Stream"
+        }
+
+        liveTitleTextView.text = liveTitle
     }
 
     private fun startViewersCounter() {
@@ -284,8 +326,13 @@ class MainActivity : AppCompatActivity() {
             cameraHelper.shutdown()
         }
 
-        messageGenerator.stopGenerating()
-        viewersTimer?.cancel()
+        if (::messageGenerator.isInitialized) {
+            messageGenerator.stopGenerating()
+        }
+
+        if (::viewerCountManager.isInitialized) {
+            viewerCountManager.stop()
+        }
     }
 
     /**

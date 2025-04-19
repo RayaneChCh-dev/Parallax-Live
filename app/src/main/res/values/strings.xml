@@ -22,6 +22,12 @@
     <string name="custom_message">Custom Message</string>
     <string name="enter_custom_message">Enter your custom message here…</string>
     <string name="start_live">Start Live</string>
+    <string name="live_purpose_hint">E.g., Cooking show, Travel vlog, Gaming session</string>
+    <string name="location_hint">E.g., Paris, Beach in Miami, My kitchen</string>
+    <string name="activity_hint">E.g., Cooking pasta, Showing tourist attractions</string>
+    <string name="live_purpose_label">What\'s the purpose of your live stream?</string>
+    <string name="location_label">Where are you right now?</string>
+    <string name="activity_label">What will you be doing on your live stream?</string>
 
     <!-- Main Activity -->
     <string name="live">LIVE</string>
@@ -35,4 +41,8 @@
     <string name="add_a_comment">Add a comment…</string>
     <string name="send_comment">Send Comment</string>
     <string name="default_web_client_id">732542501155-cd33ivujk5en4fkpnljo7msj5uf2fi3a.apps.googleusercontent.com</string>
+
+    <!-- Claude Activity -->
+
+    <string name="claude_api_key">your_api_key_here</string>
 </resources>
