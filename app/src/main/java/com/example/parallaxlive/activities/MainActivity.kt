@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +39,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     // UI components
-    private lateinit var cameraTextureView: TextureView
+
+    private lateinit var cameraPreviewView: PreviewView
     private lateinit var endLiveButton: ImageButton
     private lateinit var flipCameraButton: ImageButton
     private lateinit var viewersCountTextView: TextView
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
         // Find views
-        cameraTextureView = findViewById(R.id.texture_view_camera)
+        cameraPreviewView = findViewById(R.id.preview_view_camera)
         endLiveButton = findViewById(R.id.btn_end_live)
         flipCameraButton = findViewById(R.id.btn_flip_camera)
         viewersCountTextView = findViewById(R.id.tv_viewers_count)
@@ -163,7 +165,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupCamera() {
         // Initialize camera helper
-        cameraHelper = CameraHelper(this, this, cameraTextureView)
+        cameraHelper = CameraHelper(this, this, cameraPreviewView)
         cameraHelper.startCamera()
     }
 
@@ -190,9 +192,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewerCountManager.start()
-
-        // Update live stream title/topic based on purpose
-        updateLiveTitle()
     }
 
     private fun endLiveStream() {
@@ -210,25 +209,6 @@ class MainActivity : AppCompatActivity() {
 
         // Return to configuration screen
         finish()
-    }
-
-    private fun updateLiveTitle() {
-        // Find the live title TextView (you'll need to add this to your layout)
-        val liveTitleTextView = findViewById<TextView>(R.id.tv_live_title)
-
-        // Set title based on purpose and location
-        val liveTitle = when {
-            liveConfig.livePurpose.isNotBlank() && liveConfig.location.isNotBlank() ->
-                "${liveConfig.livePurpose} from ${liveConfig.location}"
-            liveConfig.livePurpose.isNotBlank() ->
-                liveConfig.livePurpose
-            liveConfig.location.isNotBlank() ->
-                "Live from ${liveConfig.location}"
-            else ->
-                "Live Stream"
-        }
-
-        liveTitleTextView.text = liveTitle
     }
 
     private fun startViewersCounter() {

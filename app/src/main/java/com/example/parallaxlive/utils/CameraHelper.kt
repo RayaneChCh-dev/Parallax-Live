@@ -9,6 +9,7 @@ import android.view.TextureView
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import java.util.concurrent.ExecutorService
@@ -20,18 +21,16 @@ import java.util.concurrent.Executors
 class CameraHelper(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
-    private val textureView: TextureView
+    private val previewView: PreviewView
 ) {
     private var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
-    private var lensFacing = CameraSelector.LENS_FACING_FRONT // Default to front camera
+    private var lensFacing = CameraSelector.LENS_FACING_FRONT
+    private var cameraProvider: ProcessCameraProvider? = null
 
     companion object {
         private const val TAG = "CameraHelper"
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
-        /**
-         * Check if all permissions are granted
-         */
         fun allPermissionsGranted(context: Context): Boolean {
             return REQUIRED_PERMISSIONS.all {
                 ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
@@ -39,16 +38,15 @@ class CameraHelper(
         }
     }
 
-    /**
-     * Start the camera preview
-     */
     fun startCamera() {
+        Log.d(TAG, "Starting camera setup")
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
         cameraProviderFuture.addListener({
             try {
                 // Get camera provider
-                val cameraProvider = cameraProviderFuture.get()
+                cameraProvider = cameraProviderFuture.get()
+                Log.d(TAG, "Camera provider obtained")
 
                 // Set up preview use case
                 val preview = Preview.Builder().build()
@@ -59,30 +57,19 @@ class CameraHelper(
                     .build()
 
                 // Unbind any bound use cases before rebinding
-                cameraProvider.unbindAll()
+                cameraProvider?.unbindAll()
+                Log.d(TAG, "Unbound previous camera uses")
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                val camera = cameraProvider?.bindToLifecycle(
                     lifecycleOwner,
                     cameraSelector,
                     preview
                 )
-                preview.setSurfaceProvider { request ->
 
-                    val surfaceTexture = textureView.surfaceTexture ?: return@setSurfaceProvider
-
-                    // Create a Surface with the SurfaceTexture
-                    val surface = Surface(surfaceTexture)
-
-                    // Configure the output
-                    val resolution = request.resolution
-                    surfaceTexture.setDefaultBufferSize(resolution.width, resolution.height)
-
-                    // Provide the surface to CameraX
-                    request.provideSurface(surface, cameraExecutor) {
-                        surface.release()
-                    }
-                }
+                // Connect preview to the PreviewView
+                preview.setSurfaceProvider(previewView.surfaceProvider)
+                Log.d(TAG, "Preview connected to surface provider")
 
             } catch (e: Exception) {
                 Log.e(TAG, "Use case binding failed", e)
@@ -90,9 +77,6 @@ class CameraHelper(
         }, ContextCompat.getMainExecutor(context))
     }
 
-    /**
-     * Switch between front and back camera
-     */
     fun switchCamera() {
         lensFacing = if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
             CameraSelector.LENS_FACING_BACK
@@ -104,9 +88,6 @@ class CameraHelper(
         startCamera()
     }
 
-    /**
-     * Clean up resources
-     */
     fun shutdown() {
         cameraExecutor.shutdown()
     }
