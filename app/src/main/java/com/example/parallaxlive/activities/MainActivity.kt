@@ -13,6 +13,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.example.parallaxlive.R
 import com.example.parallaxlive.adapters.MessageAdapter
@@ -27,6 +28,7 @@ import com.example.parallaxlive.utils.FirebaseAuthHelper
 import com.example.parallaxlive.utils.DatabaseHelper
 import com.example.parallaxlive.utils.RetrofitClient
 import com.example.parallaxlive.utils.ViewerCountManager
+import com.example.parallaxlive.models.User
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     // State
     private lateinit var liveConfig: LiveConfig
+    private lateinit var user: User
     private var currentViewersCount = 0
     private var isLiveActive = false
     private var viewersTimer: Timer? = null
@@ -88,6 +91,8 @@ class MainActivity : AppCompatActivity() {
             userActivityDescription = "Casual streaming"
         )
 
+        initializeUser()
+
         // Initialize UI components
         initUI()
 
@@ -105,6 +110,30 @@ class MainActivity : AppCompatActivity() {
         startLiveStream()
     }
 
+    private fun initializeUser() {
+        // Option 1: Get user from FirebaseAuth
+        val currentUser = firebaseAuthHelper.getCurrentUser()
+        if (currentUser != null) {
+            user = User(
+                id = currentUser.id,
+                username = currentUser.username,
+                fullName = currentUser.fullName,
+                profilePicUrl = currentUser.profilePicUrl.toString(),
+                accessToken = "" // You might need to get this from somewhere else
+            )
+        } else {
+            // Option 2: Use a mock user for testing
+            user = User.createMockUser()
+        }
+
+        // Optional: Load user profile image
+        if (user.profilePicUrl.isNotEmpty()) {
+            // Use an image loading library like Glide or Picasso to load the image
+            // For example with Glide:
+            // Glide.with(this).load(user.profilePicUrl).into(userProfileImageView)
+        }
+    }
+
     private fun initUI() {
 
         // Find views
@@ -117,7 +146,7 @@ class MainActivity : AppCompatActivity() {
         messageRecyclerView = findViewById(R.id.recycler_messages)
         bottomSheet = findViewById(R.id.bottom_sheet)
 
-        usernameTextView.text = liveConfig.username ?: "Host"
+        usernameTextView.text = user.username
 
         // Setup bottom sheet
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
@@ -134,6 +163,16 @@ class MainActivity : AppCompatActivity() {
                 reverseLayout = true
             }
             adapter = messageAdapter
+        }
+
+        if (user.profilePicUrl.isNotEmpty()) {
+            // Example with Glide
+            Glide.with(this)
+                .load(user.profilePicUrl)
+                .placeholder(R.drawable.ic_profile_placeholder)
+                .error(R.drawable.ic_profile_placeholder)
+                .circleCrop()
+                .into(userProfileImageView)
         }
 
         // Setup reaction adapter (for floating emojis)
