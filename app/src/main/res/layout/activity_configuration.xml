@@ -4,33 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@color/colorBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="32dp">
+
+        <!-- Header Section -->
+        <TextView
+            android:id="@+id/tv_config_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configure Live"
+            android:textSize="28sp"
+            android:textColor="@color/colorText"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hello_username"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textColor="#757575"
+            android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_config_title" />
 
-        <TextView
-            android:id="@+id/tv_config_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
             android:layout_marginTop="24dp"
-            android:text="Configure your fake live stream"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_username" />
 
         <!-- Live Purpose Section -->
@@ -39,90 +53,134 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="What's the purpose of your live stream?"
+            android:text="Purpose"
+            android:textColor="@color/colorText"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_config_title" />
+            app:layout_constraintTop_toBottomOf="@id/divider1" />
 
-        <EditText
-            android:id="@+id/et_live_purpose"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_live_purpose"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColorHighlight="@android:color/white"
-            android:hint="E.g., Cooking show, Travel vlog, Gaming session"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_live_purpose_label" />
+            app:layout_constraintTop_toBottomOf="@id/tv_live_purpose_label">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_live_purpose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="E.g., Cooking show, Travel vlog, Gaming"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Location Section -->
         <TextView
             android:id="@+id/tv_location_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Where are you right now?"
+            android:layout_marginTop="20dp"
+            android:text="Location"
+            android:textColor="@color/colorText"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_live_purpose" />
+            app:layout_constraintTop_toBottomOf="@id/til_live_purpose" />
 
-        <EditText
-            android:id="@+id/et_location"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="E.g., Paris, Beach in Miami, My kitchen"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_location_label" />
+            app:layout_constraintTop_toBottomOf="@id/tv_location_label">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="E.g., Paris, Beach in Miami, My kitchen"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Activity Description Section -->
         <TextView
             android:id="@+id/tv_activity_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="What will you be doing on your live stream?"
+            android:layout_marginTop="20dp"
+            android:text="Activity"
+            android:textColor="@color/colorText"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_location" />
+            app:layout_constraintTop_toBottomOf="@id/til_location" />
 
-        <EditText
-            android:id="@+id/et_activity_description"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_activity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="E.g., Cooking pasta, Showing tourist attractions"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_activity_label" />
+            app:layout_constraintTop_toBottomOf="@id/tv_activity_label">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_activity_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="E.g., Cooking pasta, Showing tourist attractions"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_activity" />
 
         <!-- Viewers count section -->
+        <TextView
+            android:id="@+id/tv_viewers_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Audience"
+            android:textColor="@color/colorText"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider2" />
+
         <TextView
             android:id="@+id/tv_viewers_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="Number of viewers:"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_activity_description" />
+            app:layout_constraintTop_toBottomOf="@id/tv_viewers_section" />
 
         <TextView
             android:id="@+id/tv_viewers_count"
@@ -131,18 +189,23 @@
             android:layout_marginStart="8dp"
             android:text="100"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_viewers_label"
             app:layout_constraintStart_toEndOf="@id/tv_viewers_label"
             app:layout_constraintTop_toTopOf="@id/tv_viewers_label" />
 
-        <SeekBar
+        <com.google.android.material.slider.Slider
             android:id="@+id/seekbar_viewers"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:max="100"
-            android:progress="10"
+            android:valueFrom="10"
+            android:valueTo="1000"
+            android:value="100"
+            app:thumbColor="@color/colorPrimary"
+            app:trackColorActive="@color/colorPrimary"
+            app:trackColorInactive="#E0E0E0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_viewers_label" />
@@ -154,8 +217,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Message style:"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seekbar_viewers" />
 
@@ -169,65 +231,83 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_message_type_label">
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/radio_positive_messages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:textColor="@android:color/white"
-                android:text="Positive comments" />
+                android:text="Positive comments"
+                android:paddingVertical="8dp"
+                android:buttonTint="@color/colorPrimary" />
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/radio_questions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:text="Questions about your activity" />
+                android:text="Questions about your activity"
+                android:paddingVertical="8dp"
+                android:buttonTint="@color/colorPrimary" />
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/radio_custom_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:text="Custom message style" />
+                android:text="Custom message style"
+                android:paddingVertical="8dp"
+                android:buttonTint="@color/colorPrimary" />
 
         </RadioGroup>
 
-        <EditText
-            android:id="@+id/et_custom_message"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_custom_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:alpha="0.5"
-            android:enabled="false"
-            android:hint="Enter a style/theme for custom messages"
-            android:inputType="text"
-            android:textColorHint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radio_group_message_type" />
+            app:layout_constraintTop_toBottomOf="@id/radio_group_message_type">
 
-        <!-- Buttons -->
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_custom_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter a style/theme for custom messages"
+                android:enabled="false"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Action Buttons -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_start_live"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/colorAccent"
             android:text="Start Live Stream"
             android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:cornerRadius="8dp"
+            app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_custom_message" />
+            app:layout_constraintTop_toBottomOf="@id/til_custom_message" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sign_out"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/colorPrimary"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:text="Sign Out"
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/colorPrimary"
+            app:strokeWidth="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_start_live" />

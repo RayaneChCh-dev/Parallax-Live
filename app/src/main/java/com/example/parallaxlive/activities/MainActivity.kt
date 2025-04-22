@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.TextureView
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,11 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSIONS = 10
         const val EXTRA_LIVE_CONFIG = "extra_live_config"
     }
+
+    // Google User
+
+    private lateinit var usernameTextView: TextView
+    private lateinit var userProfileImageView: ImageView
 
     // UI components
 
@@ -100,13 +106,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
+
         // Find views
+        usernameTextView = findViewById(R.id.tv_username)
+        userProfileImageView = findViewById(R.id.img_user_profile)
         cameraPreviewView = findViewById(R.id.preview_view_camera)
         endLiveButton = findViewById(R.id.btn_end_live)
         flipCameraButton = findViewById(R.id.btn_flip_camera)
         viewersCountTextView = findViewById(R.id.tv_viewers_count)
         messageRecyclerView = findViewById(R.id.recycler_messages)
         bottomSheet = findViewById(R.id.bottom_sheet)
+
+        usernameTextView.text = liveConfig.username ?: "Host"
 
         // Setup bottom sheet
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)

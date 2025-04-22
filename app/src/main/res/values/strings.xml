@@ -16,6 +16,7 @@
     <string name="hello_username">Hello, %s!</string>
     <string name="configure_your_live">Configure Your Live Stream</string>
     <string name="viewers_count">Viewers Count</string>
+    <string name="purpose_label">Purpose</string>
     <string name="message_type">Message Type</string>
     <string name="positive_messages">Positive Messages</string>
     <string name="questions">Questions</string>
