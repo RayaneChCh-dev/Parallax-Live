@@ -8,6 +8,7 @@ import retrofit2.Response
 class ClaudeRepository(private val apiService: ClaudeApiService) {
 
     suspend fun generateMessage(config: LiveConfig): String {
+
         // Create a context-rich prompt based on the configuration
         val contextPrompt = buildContextPrompt(config)
 
@@ -20,25 +21,43 @@ class ClaudeRepository(private val apiService: ClaudeApiService) {
                     content = contextPrompt
                 )
             ),
-            max_tokens = 100
+            max_tokens = 100,
+            temperature = .3
         )
 
         // Make API call
         return withContext(Dispatchers.IO) {
             try {
                 val response = apiService.generateMessage(request)
+
                 if (response.isSuccessful && response.body() != null) {
                     // Extract the text from the response
-                    response.body()?.content?.firstOrNull()?.text?.trim() ?: getFallbackMessage(config)
+                    val responseBody = response.body()
+                    val textContent = responseBody?.content?.firstOrNull { it.type == "text" }?.text
+                    val trimmedContent = textContent?.trim()
+                    val cleanedContent = trimmedContent?.let { removeSurroundingQuotes(it) }
+                    return@withContext cleanedContent ?: getFallbackMessage(config)
                 } else {
+                    println("Erreur API: ${response.code()} - ${response.message()}")
                     // Return a fallback message if API call fails
                     getFallbackMessage(config)
                 }
             } catch (e: Exception) {
                 // Return a fallback message if API call throws an exception
+                println("Erreur lors de la requête API : ${e.message}")
+                e.printStackTrace()
                 getFallbackMessage(config)
             }
         }
+    }
+
+    private fun removeSurroundingQuotes(input: String): String {
+        // Vérifiez si la chaîne commence et se termine par un guillemet
+        if (input.startsWith('"') && input.endsWith('"')) {
+            // Retirez le premier et le dernier caractère
+            return input.substring(1, input.length - 1)
+        }
+        return input
     }
 
     private fun buildContextPrompt(config: LiveConfig): String {
@@ -56,12 +75,14 @@ class ClaudeRepository(private val apiService: ClaudeApiService) {
         return """
             $basePrompt
             
-            Important context:
+            Important Context:
             - The livestreamer is doing: ${config.livePurpose}
             - Current location: ${config.location}
             - Current activity: ${config.userActivityDescription}
             
             Make the message sound authentic and relevant to the context. Keep it under 50 characters and include an emoji occasionally. Make sure it sounds like a real person watching the stream would write it.
+            Message should have hastags and follow some trends. You can inspire you with Youtube, TikTok, Instagram and other social media.
+            Use a specific ton: Choose the behavior of the writter. Is it a cool person ? An hater ? A lover ? Or just a viewer ?
             
             Only generate the message text, nothing else.
         """.trimIndent()

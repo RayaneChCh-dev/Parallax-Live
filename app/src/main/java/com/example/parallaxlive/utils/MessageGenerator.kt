@@ -138,6 +138,9 @@ class MessageGenerator(
                 try {
                     val message = claudeRepository.generateMessage(config)
                     messageCache.add(message)
+
+                    print("Messages dans le Cache:")
+                    println(messageCache)
                 } catch (e: Exception) {
                     // Silently fail, we have fallbacks
                 }
