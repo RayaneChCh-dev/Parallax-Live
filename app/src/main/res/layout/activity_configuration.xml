@@ -18,6 +18,7 @@
             android:text="@string/hello_username"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,6 +29,7 @@
             android:layout_marginTop="24dp"
             android:text="Configure your fake live stream"
             android:textSize="18sp"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_username" />
 
@@ -39,6 +41,7 @@
             android:layout_marginTop="24dp"
             android:text="What's the purpose of your live stream?"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_config_title" />
 
@@ -50,6 +53,7 @@
             android:hint="E.g., Cooking show, Travel vlog, Gaming session"
             android:inputType="text"
             android:maxLines="1"
+            android:textColorHint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_live_purpose_label" />
@@ -62,6 +66,7 @@
             android:layout_marginTop="16dp"
             android:text="Where are you right now?"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_live_purpose" />
 
@@ -73,6 +78,7 @@
             android:hint="E.g., Paris, Beach in Miami, My kitchen"
             android:inputType="text"
             android:maxLines="1"
+            android:textColorHint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_location_label" />
@@ -85,6 +91,7 @@
             android:layout_marginTop="16dp"
             android:text="What will you be doing on your live stream?"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_location" />
 
@@ -96,6 +103,7 @@
             android:hint="E.g., Cooking pasta, Showing tourist attractions"
             android:inputType="text"
             android:maxLines="1"
+            android:textColorHint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_activity_label" />
@@ -108,6 +116,7 @@
             android:layout_marginTop="24dp"
             android:text="Number of viewers:"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_activity_description" />
 
@@ -118,6 +127,7 @@
             android:layout_marginStart="8dp"
             android:text="100"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="@id/tv_viewers_label"
             app:layout_constraintStart_toEndOf="@id/tv_viewers_label"
             app:layout_constraintTop_toTopOf="@id/tv_viewers_label" />
@@ -141,6 +151,7 @@
             android:layout_marginTop="24dp"
             android:text="Message style:"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seekbar_viewers" />
 
@@ -159,18 +170,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
+                android:textColor="@android:color/white"
                 android:text="Positive comments" />
 
             <RadioButton
                 android:id="@+id/radio_questions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
                 android:text="Questions about your activity" />
 
             <RadioButton
                 android:id="@+id/radio_custom_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
                 android:text="Custom message style" />
 
         </RadioGroup>
@@ -184,6 +198,7 @@
             android:enabled="false"
             android:hint="Enter a style/theme for custom messages"
             android:inputType="text"
+            android:textColorHint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radio_group_message_type" />
