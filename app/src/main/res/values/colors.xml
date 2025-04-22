@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4285F4</color> <!-- Changed to Google blue -->
-    <color name="colorPrimaryDark">#3367D6</color>
-    <color name="colorAccent">#F44336</color>
-    <color name="colorBackground">#121212</color>
-    <color name="colorText">#FFFFFF</color>
-    <color name="colorDivider">#33FFFFFF</color>
+    <color name="colorPrimary">#6200EE</color>        <!-- Deep purple - changed from original -->
+    <color name="colorPrimaryDark">#3700B3</color>    <!-- Darker purple for status bar -->
+    <color name="colorAccent">#FF4081</color>         <!-- Pink accent for CTA buttons -->
+    <color name="colorBackground">#FAFAFA</color>     <!-- Slightly off-white background -->
+    <color name="colorText">#212121</color>           <!-- Dark text for readability -->
+    <color name="colorTextSecondary">#9E9E9E</color>  <!-- Secondary text color -->
 </resources>
