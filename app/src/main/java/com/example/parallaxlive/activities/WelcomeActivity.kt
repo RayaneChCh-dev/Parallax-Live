@@ -16,6 +16,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.ConnectionResult
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 
 class WelcomeActivity : AppCompatActivity() {
 
@@ -38,12 +41,12 @@ class WelcomeActivity : AppCompatActivity() {
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign-In failed
+
                 Log.w(TAG, "Google sign in failed", e)
                 Toast.makeText(this, "Sign-in failed: ${e.statusCode}", Toast.LENGTH_SHORT).show()
             }
         } else {
             Log.w(TAG, "Sign-in cancelled with result code: ${result.resultCode}")
-            Toast.makeText(this, "Sign-in cancelled", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -68,16 +71,16 @@ class WelcomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly
-        val currentUser = auth.currentUser
+        val currentUser = auth.currentUser // authentifié ?
         if (currentUser != null) {
-            navigateToConfigScreen()
+            navigateToConfigScreen() // Si oui, -> ConfigurationActivity.kt
         }
     }
 
     private fun signIn() {
         googleSignInClient.signOut().addOnCompleteListener {
             try {
+                // instances & codes, ...
                 val googleApiAvailability = GoogleApiAvailability.getInstance()
                 val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
                 if (resultCode != ConnectionResult.SUCCESS) {
@@ -85,7 +88,6 @@ class WelcomeActivity : AppCompatActivity() {
                     googleApiAvailability.getErrorDialog(this, resultCode, 1000)?.show()
                     return@addOnCompleteListener
                 }
-
                 val signInIntent = googleSignInClient.signInIntent
                 signInLauncher.launch(signInIntent)
 
@@ -101,24 +103,42 @@ class WelcomeActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
-                    saveUserData()
                     navigateToConfigScreen()
+                    userData2DB(user)
                 } else {
-                    // If sign in fails, display a message to the user
+                    //erreur
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-    private fun saveUserData() {
-        // Save user data to Firebase database
-        // For now, we'll just log it
-        Log.d(TAG, "Saving user data for: ${auth.currentUser?.displayName}")
-        // In a real implementation, you would call DatabaseHelper.saveUserData() here
+    private fun userData2DB(user: FirebaseUser?) {
+        if (user == null) {
+            Log.w(TAG, "null user, can't save to BDD")
+            return
+        }
+
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("users")
+
+        val userData = HashMap<String, Any>()
+        userData["uid"] = user.uid
+        userData["displayName"] = user.displayName ?: ""
+        userData["email"] = user.email ?: ""
+        userData["lastLogin"] = ServerValue.TIMESTAMP
+
+        usersRef.child(user.uid)
+            .setValue(userData)
+            .addOnSuccessListener {
+                Log.d(TAG, "User ${user.displayName} (${user.uid}) success BDD save")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG,"Failed", e)
+                Toast.makeText(this, "FailSave: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun navigateToConfigScreen() {
