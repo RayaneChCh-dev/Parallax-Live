@@ -174,6 +174,16 @@ class MainActivity : AppCompatActivity() {
                 .circleCrop()
                 .into(userProfileImageView)
         }
+        val layoutManager = messageRecyclerView.layoutManager as LinearLayoutManager
+        messageRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
+            if (bottom < oldBottom) {
+                messageRecyclerView.post {
+                    if (layoutManager.findFirstVisibleItemPosition() < 3) {
+                        scrollToLatestMessage()
+                    }
+                }
+            }
+        }
 
         // Setup reaction adapter (for floating emojis)
         reactionAdapter = ReactionAdapter()
@@ -231,6 +241,7 @@ class MainActivity : AppCompatActivity() {
         messageGenerator = MessageGenerator(liveConfig, claudeRepository) { message ->
             runOnUiThread {
                 messageAdapter.addMessage(message)
+                scrollToLatestMessage()
             }
         }
         messageGenerator.startGenerating()
@@ -303,6 +314,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun scrollToLatestMessage() {
+        if (messageAdapter.itemCount > 0) {
+            // Comme vous utilisez reverseLayout=true, la position 0 est le message le plus récent
+            messageRecyclerView.smoothScrollToPosition(0)
         }
     }
 

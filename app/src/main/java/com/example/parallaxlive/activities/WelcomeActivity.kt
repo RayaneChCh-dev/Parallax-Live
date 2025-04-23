@@ -26,7 +26,6 @@ class WelcomeActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private val TAG = "WelcomeActivity"
 
-    // Activity result launcher for Google Sign-In
     private val signInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
