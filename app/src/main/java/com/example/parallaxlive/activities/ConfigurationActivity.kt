@@ -130,6 +130,7 @@ class ConfigurationActivity : AppCompatActivity() {
         }
 
         val config = LiveConfig(
+            username = auth.currentUser?.displayName.toString(),
             viewersCount = viewersCount,
             messageType = messageType,
             customMessage = if (messageType == LiveConfig.MessageType.CUSTOM) {

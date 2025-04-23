@@ -3,6 +3,7 @@ package com.example.parallaxlive.utils
 import com.example.parallaxlive.R
 import com.example.parallaxlive.models.FakeMessage
 import com.example.parallaxlive.models.LiveConfig
+import com.example.parallaxlive.models.ViewerConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,6 +31,12 @@ class MessageGenerator(
         "fitness_freak", "travel_lover", "photo_ninja", "food_addict",
         "music_fan", "art_enthusiast", "tech_geek", "fashionista",
         "nature_explorer", "book_worm", "movie_buff", "coffee_lover"
+    )
+
+    private val viewerFeelings = listOf(
+        "hungry", "enthusiastic", "questioning", "impressed",
+        "not happy", "sad", "excited", "curious", "bored", "happy",
+        "confused", "tired", "inspired", "relaxed", "anxious", "surprised"
     )
 
     // Keep a cache of generated messages to avoid excessive API calls
@@ -136,11 +143,14 @@ class MessageGenerator(
         coroutineScope.launch {
             repeat(5) {
                 try {
-                    val message = claudeRepository.generateMessage(config)
+                    val viewerData = ViewerConfig(
+                        username = null, // Par manque de temps, le viewer n'a pas de nom attitré :(
+                        feeling = viewerFeelings.random(),
+                        messageMax = kotlin.random.Random.nextInt(1, 20) * 10
+                    )
+                    val message = claudeRepository.generateMessage(config, viewerData, messageCache)
                     messageCache.add(message)
 
-                    print("Messages dans le Cache:")
-                    println(messageCache)
                 } catch (e: Exception) {
                     // Silently fail, we have fallbacks
                 }

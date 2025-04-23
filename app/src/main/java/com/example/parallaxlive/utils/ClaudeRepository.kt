@@ -3,14 +3,15 @@ package com.example.parallaxlive.utils
 import com.example.parallaxlive.models.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.collections.mutableListOf
 import retrofit2.Response
 
 class ClaudeRepository(private val apiService: ClaudeApiService) {
 
-    suspend fun generateMessage(config: LiveConfig): String {
+    suspend fun generateMessage(live_config: LiveConfig, viewer_config: ViewerConfig, messagesHistory: MutableList<String>): String {
 
         // Create a context-rich prompt based on the configuration
-        val contextPrompt = buildContextPrompt(config)
+        val contextPrompt = buildContextPrompt(live_config, viewer_config, messagesHistory)
 
         // Create the request
         val request = ClaudeRequest(
@@ -22,7 +23,7 @@ class ClaudeRepository(private val apiService: ClaudeApiService) {
                 )
             ),
             max_tokens = 100,
-            temperature = .3
+            temperature = 0.9
         )
 
         // Make API call
@@ -36,17 +37,17 @@ class ClaudeRepository(private val apiService: ClaudeApiService) {
                     val textContent = responseBody?.content?.firstOrNull { it.type == "text" }?.text
                     val trimmedContent = textContent?.trim()
                     val cleanedContent = trimmedContent?.let { removeSurroundingQuotes(it) }
-                    return@withContext cleanedContent ?: getFallbackMessage(config)
+                    return@withContext cleanedContent ?: getFallbackMessage(live_config)
                 } else {
                     println("Erreur API: ${response.code()} - ${response.message()}")
                     // Return a fallback message if API call fails
-                    getFallbackMessage(config)
+                    getFallbackMessage(live_config)
                 }
             } catch (e: Exception) {
                 // Return a fallback message if API call throws an exception
                 println("Erreur lors de la requête API : ${e.message}")
                 e.printStackTrace()
-                getFallbackMessage(config)
+                getFallbackMessage(live_config)
             }
         }
     }
@@ -60,8 +61,8 @@ class ClaudeRepository(private val apiService: ClaudeApiService) {
         return input
     }
 
-    private fun buildContextPrompt(config: LiveConfig): String {
-        val basePrompt = when (config.messageType) {
+    private fun buildContextPrompt(config: LiveConfig, viewer_config: ViewerConfig, messagesHistory: MutableList<String>): String {
+        val instructPrompt = when (config.messageType) {
             LiveConfig.MessageType.POSITIVE ->
                 "Generate a short, positive comment for a social media livestream."
 
@@ -73,20 +74,30 @@ class ClaudeRepository(private val apiService: ClaudeApiService) {
         }
 
         return """
-            $basePrompt
+            ## Context:
+            You're a viewer with feeling "${viewer_config.feeling}"
+            Your goal is to send a message to the livestreamer and see its reaction or reactions of other viewers.
+            You base your message on the chat history.
             
-            Important Context:
+            ## Stream Context:
+            - The livestreamer name: @${config.username}
             - The livestreamer is doing: ${config.livePurpose}
             - Current location: ${config.location}
             - Current activity: ${config.userActivityDescription}
+            - Current viewers count on the live: ${config.viewersCount}
+
+            ## Stream Messages History Context:
+            - ${ if (messagesHistory.isEmpty()) { "Vous êtes le premier commentaire" } else { messagesHistory.joinToString(separator = "\n - ") } }\n
             
-            Make the message sound authentic and relevant to the context. Keep it under 50 characters and include an emoji occasionally. Make sure it sounds like a real person watching the stream would write it.
-            Message should have hastags and follow some trends. You can inspire you with Youtube, TikTok, Instagram and other social media.
-            Use a specific ton: Choose the behavior of the writter. Is it a cool person ? An hater ? A lover ? Or just a viewer ?
+            ## Instructions
+            $instructPrompt
+            Make the message sound authentic and relevant to the context. Keep it under ${viewer_config.messageMax.toString()} characters. Make sure it sounds like human chatting on a livestream.
+            Your message can provide tags or emojis.
             
             Only generate the message text, nothing else.
         """.trimIndent()
     }
+
 
     // Fallback messages in case API call fails
     private fun getFallbackMessage(config: LiveConfig): String {
