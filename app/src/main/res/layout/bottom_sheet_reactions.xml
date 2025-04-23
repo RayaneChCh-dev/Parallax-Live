@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bottom_sheet_bg"
     android:padding="16dp"
-    app:behavior_hideable="false"
+    app:behavior_hideable="true"
     app:behavior_peekHeight="56dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -89,6 +89,7 @@
 
     <!-- Comment Input -->
     <LinearLayout
+        android:id="@+id/comment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -109,6 +110,8 @@
             android:padding="12dp"
             android:textColor="@android:color/white"
             android:textColorHint="#80FFFFFF"
+            android:maxLines="1"
+            android:imeOptions="actionSend"
             android:textSize="14sp" />
 
         <ImageButton

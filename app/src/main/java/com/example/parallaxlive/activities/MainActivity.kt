@@ -1,15 +1,19 @@
 package com.example.parallaxlive.activities
 
 import android.Manifest
+import android.content.Context
 import android.os.Bundle
-import android.view.TextureView
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -59,6 +63,9 @@ class MainActivity : AppCompatActivity() {
     // Adapters
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var reactionAdapter: ReactionAdapter
+    private lateinit var emojiContainer: ConstraintLayout
+    private lateinit var commentEditText: EditText
+    private lateinit var sendCommentButton: ImageButton
 
     // Helpers
     private lateinit var viewerCountManager: ViewerCountManager
@@ -186,7 +193,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Setup reaction adapter (for floating emojis)
-        reactionAdapter = ReactionAdapter()
+        emojiContainer = findViewById(R.id.emoji_container)
+        commentEditText = findViewById(R.id.et_comment)
+        sendCommentButton = findViewById(R.id.btn_send_comment)
+
+        reactionAdapter = ReactionAdapter(findViewById(R.id.main_container))
 
         // Setup button listeners
         endLiveButton.setOnClickListener {
@@ -203,6 +214,29 @@ class MainActivity : AppCompatActivity() {
         setupEmojiButtons()
     }
 
+    private fun setupBottomSheet() {
+        // Find bottom sheet components
+        bottomSheet = findViewById(R.id.bottom_sheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+
+        // Set initial state
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        // Set callback
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // No specific actions needed on state change
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // No specific actions needed on slide
+            }
+        })
+
+        // Set up comment sending
+        setupCommentFunctionality()
+    }
+
     private fun setupEmojiButtons() {
         // Find all emoji buttons in the grid
         val emojiButtons = listOf(
@@ -213,13 +247,59 @@ class MainActivity : AppCompatActivity() {
         // Set click listeners for all emoji buttons
         emojiButtons.forEach { buttonId ->
             findViewById<View>(buttonId).setOnClickListener {
-                // Display floating emoji reaction
+                // Get the emoji from the button
                 val emoji = (it as android.widget.Button).text.toString()
-                reactionAdapter.addReaction(emoji)
+
+                // Create burst effect with multiple emojis
+                reactionAdapter.addReactionBurst(emoji, 5)
+
+                // Optionally collapse the bottom sheet after selecting an emoji
+                // bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
                 // Show a toast for demonstration
                 Toast.makeText(this, "Sent $emoji", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun setupCommentFunctionality() {
+        // Set up send button click listener
+        sendCommentButton.setOnClickListener {
+            sendComment()
+        }
+
+        // Set up EditText action listener for when user presses "Send" on keyboard
+        commentEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                sendComment()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+    }
+
+    private fun sendComment() {
+        val commentText = commentEditText.text.toString().trim()
+        if (commentText.isNotEmpty()) {
+            // Create a message from the current user
+            val userComment = FakeMessage(
+                username = user.username,
+                message = commentText,
+                profilePicResId = R.drawable.ic_profile_placeholder  // Or use a proper profile pic
+            )
+
+            // Add message to the list
+            messageAdapter.addMessage(userComment)
+
+            // Clear input field
+            commentEditText.setText("")
+
+            // Hide keyboard
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(commentEditText.windowToken, 0)
+
+            // Optionally collapse bottom sheet after sending
+            // bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -397,8 +477,5 @@ class MainActivity : AppCompatActivity() {
         } else {
             setupCamera()
         }
-
-        // For Instagram Graph API, permissions are handled through the Facebook SDK
-        // We don't need to request them here as they were handled during login
     }
 }

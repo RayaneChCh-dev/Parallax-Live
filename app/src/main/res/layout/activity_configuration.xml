@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Purpose"
+            android:text="Title"
             android:textColor="@color/colorText"
             android:textSize="16sp"
             android:textStyle="bold"

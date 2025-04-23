@@ -23,14 +23,21 @@ class MessageGenerator(
         R.drawable.profile_pic_3,
         R.drawable.profile_pic_4,
         R.drawable.profile_pic_5,
-        R.drawable.profile_pic_6
+        R.drawable.profile_pic_6,
+        R.drawable.profile_pic_10,
+        R.drawable.profile_pic_11,
+        R.drawable.profile_pic_12,
+        R.drawable.profile_pic_7,
+        R.drawable.profile_pic_8,
+        R.drawable.profile_pic_9
     )
 
     private val usernames = listOf(
         "emma_smith", "john_doe", "sarah_j", "alex_cool",
         "fitness_freak", "travel_lover", "photo_ninja", "food_addict",
         "music_fan", "art_enthusiast", "tech_geek", "fashionista",
-        "nature_explorer", "book_worm", "movie_buff", "coffee_lover"
+        "nature_explorer", "book_worm", "movie_buff", "coffee_lover", "marlon", "giganiggamax_goonlord",
+        "georgesdroyde"
     )
 
     private val viewerFeelings = listOf(
