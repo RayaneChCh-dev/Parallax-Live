@@ -13,7 +13,7 @@ data class LiveConfig(
     val customMessage: String = "",
     val livePurpose: String = "", // Purpose of the live stream (e.g., "Cooking show", "Travel vlog")
     val location: String = "",    // User's current location (e.g., "Paris, France")
-    val userActivityDescription: String = "", // What the user is doing (e.g., "Showing street food")
+    val userActivityDescription: String = "", // What the user is doing (e.g., "Showing street food"
 ) : Parcelable {
     enum class MessageType {
         POSITIVE,
